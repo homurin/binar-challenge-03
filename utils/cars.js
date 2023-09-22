@@ -6,65 +6,65 @@ class Car {
     try {
       const buffer = await fs.readFile("./fixtures/cars.json");
       const results = JSON.parse(buffer.toString());
-      return results;
+      return [results, null];
     } catch (err) {
-      throw new Error("Failed to get data");
+      return [null, err];
     }
   }
   static async getCars() {
     try {
       const buffer = await fs.readFile("./fixtures/cars.json");
       const results = JSON.parse(buffer.toString());
-      return results;
+      return [results, null];
     } catch (err) {
-      throw new Error("Failed to get data");
+      return [null, err];
     }
   }
   static async getCarById(id) {
     try {
-      const cars = await this.getCars();
-      const detailCar = cars.filter((car) => car.id === id.toString());
-      if (detailCar.length === 0) {
-        return false;
+      const [cars, error] = await this.getCars();
+      const car = cars.filter((car) => car.id === id.toString());
+      if (car.length === 0) {
+        return [false, null];
       }
-      return detailCar;
+      return [car, null];
     } catch (err) {
-      throw new Error("Failed to get cars detail");
+      return [null, err];
     }
   }
   static async createCar(data) {
     try {
-      const cars = await this.getCars();
+      const [cars, error] = await this.getCars();
       const newCar = { id: uuidv4(), ...data };
       cars.push(newCar);
       const newData = JSON.stringify(cars);
       await fs.writeFile("./fixtures/cars.json", newData);
-      return newCar;
+      return [newCar, null];
     } catch (err) {
-      throw new Error("Failed to post data");
+      return [null, err];
     }
   }
   static async updateCar(id, data) {
     try {
-      const cars = await this.getCars();
+      const [cars, error] = await this.getCars();
       const index = cars.findIndex((el) => el.id === id);
       cars[index] = { ...cars[index], ...data };
       const newData = JSON.stringify(cars);
       await fs.writeFile("./fixtures/cars.json", newData);
-      return cars[index];
+      return [cars[index], null];
     } catch (err) {
-      throw new Error("Failed to update data");
+      return [null, err];
     }
   }
   static async deleteCar(id) {
     try {
-      const cars = await this.getCars();
+      const [cars, error] = await this.getCars();
       const carFilter = cars.filter((value) => value.id !== id);
       const newData = JSON.stringify(carFilter);
       await fs.writeFile("./fixtures/cars.json", newData);
-      return null;
+      return [null, null];
     } catch (err) {
-      throw new Error("Failed to delete data");
+      return [null, err];
     }
   }
 }
