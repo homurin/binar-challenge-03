@@ -1,9 +1,5 @@
 import Car from "../utils/cars.js";
 
-const checkEmptyUrl = (req, res) => {
-  res.status(404).json({ status: "failed", message: "page not found" });
-};
-
 const checkId = async (req, res, next, val) => {
   const car = await Car.getCarById(val);
   if (!car) {
@@ -29,12 +25,6 @@ const checkBody = (req, res, next) => {
     });
   }
   next();
-};
-
-const getRootUrl = (req, res) => {
-  return res.status(200).json({
-    message: "Ping successfully",
-  });
 };
 
 const getAllCars = async (req, res) => {
@@ -79,15 +69,13 @@ const deleteCar = async (req, res) => {
   return res.status(204).json({
     status: "success",
     requestTime: req.requestTime,
-    message: success,
+    message: `car with id ${id} successfully deleted`,
   });
 };
 
 export {
-  checkEmptyUrl,
   checkId,
   checkBody,
-  getRootUrl,
   getAllCars,
   getCarById,
   createCar,
